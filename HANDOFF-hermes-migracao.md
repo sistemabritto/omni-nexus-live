@@ -35,13 +35,13 @@ No /mnt/docker-volumes/hermes-unified:
       (o rsync da mistica levou .hermes/ junto → checar /mnt/docker-volumes/hermes-unified/.hermes/profiles/iron
       e REMOVER esse .hermes/profiles pra não confundir; é lixo de 48K)
 - [ ] Cada profile precisa de TELEGRAM_BOT_TOKEN no SEU .env (hoje tokens vinham das env da stack antiga):
-      raiz (.env, mistica):  TELEGRAM_BOT_TOKEN=8741582155:AAFMFa-DAiGuzNeAFsqjtSnGx42Bu4Up1tM
-      profiles/excarplex/.env: TELEGRAM_BOT_TOKEN=8776339773:AAFCEmZH-6wxrw0YwV03JXA0iHO9xWdrG3M
-      profiles/stoic/.env:     TELEGRAM_BOT_TOKEN=8681412212:AAHTyA-MtGdWcZThtJ62YMf08cjDq0anQgo
-      profiles/iron/.env:      TELEGRAM_BOT_TOKEN=8559821250:AAGVI2EMrP0Z0sx-cVlcFnbj4is1LPU4yeU
+      raiz (.env, mistica): [REDACTED — obter do cofre privado]
+      profiles/excarplex/.env: [REDACTED — obter do cofre privado]
+      profiles/stoic/.env: [REDACTED — obter do cofre privado]
+      profiles/iron/.env: [REDACTED — obter do cofre privado]
       (.env existentes já têm NVIDIA/OPENROUTER/OPENAI/GROQ keys, TELEGRAM_ALLOWED_USERS etc — só ADICIONAR o token)
 - [ ] API server: só a mistica (default) mantém API_SERVER_ENABLED=true + API_SERVER_PORT=8642 +
-      API_SERVER_KEY=hermes@Workflow01 → adicionar ao .env da RAIZ.
+      API_SERVER_KEY=<PRIVATE_API_KEY> → adicionar ao .env da RAIZ.
       Nos .env dos outros 3 profiles: API_SERVER_ENABLED=false (ou omitir) para evitar conflito de porta 8642
       (todos os profiles tentam bindar 8642 por default — fato verificado no código).
 - [ ] Kanban: dispatcher deve rodar SÓ num gateway. Config kanban.dispatch_in_gateway=true está em TODOS
@@ -59,10 +59,10 @@ No /mnt/docker-volumes/hermes-unified:
 - [ ] SOUL.md existe em cada profile dir (marcador que o reconciler usa) — conferir nos 3 profiles.
 
 ## Passo 5 — Stack nova (dashboard auth OBRIGATÓRIO em bind público)
-Credenciais geradas (usar estas):
+Credenciais: preencher somente no ambiente privado a partir do cofre autorizado; valores removidos deste documento público.
   HERMES_DASHBOARD_BASIC_AUTH_USERNAME=felipe
-  HERMES_DASHBOARD_BASIC_AUTH_PASSWORD=kuj9HlNqzV7ZBFV0TRXZ
-  HERMES_DASHBOARD_BASIC_AUTH_SECRET=3974a81dbcfaa416d15b19e6441ddfeb7927760c054b3a41ff7adddc71e3ae29
+  HERMES_DASHBOARD_BASIC_AUTH_PASSWORD=<PRIVATE_VALUE>
+  HERMES_DASHBOARD_BASIC_AUTH_SECRET=<PRIVATE_VALUE>
 YAML alvo (stack "hermes2" via docker stack deploy; depois colar no Portainer):
 
 ```yaml
@@ -79,8 +79,8 @@ services:
       - HERMES_DASHBOARD_HOST=0.0.0.0
       - HERMES_DASHBOARD_PORT=9119
       - HERMES_DASHBOARD_BASIC_AUTH_USERNAME=felipe
-      - HERMES_DASHBOARD_BASIC_AUTH_PASSWORD=kuj9HlNqzV7ZBFV0TRXZ
-      - HERMES_DASHBOARD_BASIC_AUTH_SECRET=3974a81dbcfaa416d15b19e6441ddfeb7927760c054b3a41ff7adddc71e3ae29
+      - HERMES_DASHBOARD_BASIC_AUTH_PASSWORD=<PRIVATE_VALUE>
+      - HERMES_DASHBOARD_BASIC_AUTH_SECRET=<PRIVATE_VALUE>
     deploy:
       placement: {constraints: [node.role == manager]}
       restart_policy: {condition: on-failure, delay: 15s}
@@ -117,8 +117,8 @@ Sequência de cutover:
 
 ## Passo 6 — Validação
 - Telegram: mandar msg nos 4 bots
-- Dashboard: https://hermes.workflowapi.com.br (login felipe / senha acima; switcher de profiles)
-- API: curl https://mistica.workflowapi.com.br/v1/models -H "Authorization: Bearer hermes@Workflow01"
+- Dashboard: https://hermes.workflowapi.com.br (usar acesso privado e senha nova definida pelo titular)
+- API: curl https://mistica.workflowapi.com.br/v1/models -H "Authorization: Bearer <PRIVATE_API_KEY>"
 - AVISAR O USUÁRIO para testar (requisito explícito)
 - Manter serviços antigos em scale 0 (NÃO deletar stack antiga) por alguns dias
 - Colar YAML no Portainer como stack (usuário quer Portainer como fonte)
